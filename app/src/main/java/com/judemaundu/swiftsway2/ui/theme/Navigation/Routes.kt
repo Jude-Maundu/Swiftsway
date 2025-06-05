@@ -38,3 +38,11 @@ const val ROUTE_PASSENGER_RIDE_HISTORY = "passenger_ride_history"
 const val ROUTE_PASSENGER_ROUTE_PLANNING = "passenger_route_planning"
 const val ROUTE_PASSENGER_SETTINGS = "passenger_settings"
 const val ROUTE_PASSENGER_TRIP_HISTORY = "passenger_trip_history"
+
+// Admin routes
+const val ROUTE_ADMIN_PANEL= "admin_panel_Screen"
+const val ROUTE_USER_INPUT = "user_list_Screen"
+const val ROUTE_USER_MANAGEMENT = "user_management_Screen"
+const val ROUTE_CONTENT_MANAGEMENT = "content_management_Screen"
+const val ROUTE_DATA_MANAGEMENT = "data_management_Screen"
+const val ROUTE_VEHICLE_MANAGEMENT = "vehicle_Screen"

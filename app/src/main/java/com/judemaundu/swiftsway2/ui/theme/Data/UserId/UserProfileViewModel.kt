@@ -1,4 +1,5 @@
-package com.judemaundu.swiftsway2.ui.theme.Data
+package com.judemaundu.swiftsway2.ui.theme.Data.UserId
+
 
 import android.widget.Toast
 import androidx.compose.runtime.Composable
@@ -9,13 +10,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.judemaundu.swiftsway2.ui.theme.Screens.Users.Admin.ContentRepository
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
 import java.util.UUID
+import javax.inject.Inject
 
 class UserProfileViewModel : ViewModel() {
     private val auth = FirebaseAuth.getInstance()
     private val database = FirebaseDatabase.getInstance().getReference("users")
-   private val storage = FirebaseStorage.getInstance().reference
+    private val storage = FirebaseStorage.getInstance().reference
 
     var name by mutableStateOf("")
         private set

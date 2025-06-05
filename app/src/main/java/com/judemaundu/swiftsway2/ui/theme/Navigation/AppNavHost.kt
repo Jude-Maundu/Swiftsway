@@ -9,8 +9,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.judemaundu.swiftsway2.ui.theme.Data.UserId.UserListScreen
 import com.judemaundu.swiftsway2.ui.theme.Screens.Login.LoginScreen
 import com.judemaundu.swiftsway2.ui.theme.Screens.Register.RegisterScreen
+import com.judemaundu.swiftsway2.ui.theme.Screens.Users.Admin.AdminTabbedScreen
+import com.judemaundu.swiftsway2.ui.theme.Screens.Users.Admin.ContentManagementScreen
 import com.judemaundu.swiftsway2.ui.theme.Screens.Users.Conductor.BookingVerificationScreen
 import com.judemaundu.swiftsway2.ui.theme.Screens.Users.Conductor.ConductorDashboardScreen
 import com.judemaundu.swiftsway2.ui.theme.Screens.Users.Conductor.ConductorSettingsScreen
@@ -20,7 +23,6 @@ import com.judemaundu.swiftsway2.ui.theme.Screens.Users.Conductor.RequestsScreen
 import com.judemaundu.swiftsway2.ui.theme.Screens.Users.Driver.DriverDashboardScreen
 import com.judemaundu.swiftsway2.ui.theme.Screens.Users.Driver.DriverSettingsScreen
 import com.judemaundu.swiftsway2.ui.theme.Screens.Users.Driver.RequestManagementScreen
-import com.judemaundu.swiftsway2.ui.theme.Screens.Users.Driver.RouteManagementScreen
 import com.judemaundu.swiftsway2.ui.theme.Screens.Users.Driver.ScheduleScreen
 import com.judemaundu.swiftsway2.ui.theme.Screens.Users.Driver.VehicleStatusScreen
 import com.judemaundu.swiftsway2.ui.theme.Screens.Users.Passenger.BookingScreen
@@ -32,21 +34,22 @@ import com.judemaundu.swiftsway2.ui.theme.Screens.Users.Passenger.PassengerTripP
 import com.judemaundu.swiftsway2.ui.theme.Screens.Users.Passenger.PaymentScreen
 import com.judemaundu.swiftsway2.ui.theme.Screens.Users.Passenger.RideHistoryScreen
 import com.judemaundu.swiftsway2.ui.theme.Screens.Users.Passenger.VehicleTrackingScreen
+import com.judemaundu.swiftsway2.ui.theme.screens.users.driver.RouteManagementScreen
 
 
 @Composable
 fun AppNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = ROUTE_REGISTER
+    startDestination: String = ROUTE_PASSENGER_DASHBOARD
 ) {
     NavHost(navController = navController, modifier = modifier, startDestination = startDestination) {
         composable(ROUTE_LOGIN) {
-           LoginScreen(navController)
+            LoginScreen(navController)
         }
-//        composable(ROUTE_REGISTER) {
-//            RegisterScreen(navController)
-//        }
+        composable(ROUTE_REGISTER) {
+            RegisterScreen(navController)
+        }
 
         // Passenger screens
         composable(ROUTE_PASSENGER_DASHBOARD) { PassengerDashboardScreen(navController) }
@@ -73,10 +76,23 @@ fun AppNavHost(
         composable(ROUTE_CONDUCTOR_DASHBOARD) { ConductorDashboardScreen(navController) }
         composable(ROUTE_CONDUCTOR_PROFILE) { ProfileScreen(navController) }
         composable(ROUTE_CONDUCTOR_SETTINGS) { ConductorSettingsScreen(navController) }
-        composable(ROUTE_CONDUCTOR_BOOKING) { BookingVerificationScreen("conductorRouteId", navController) }
+        composable(ROUTE_CONDUCTOR_BOOKING) {
+            BookingVerificationScreen(
+                "conductorRouteId",
+                navController
+            )
+        }
         composable(ROUTE_CONDUCTOR_PAYMENT) { PaymentVerificationScreen(navController) }
         composable(ROUTE_CONDUCTOR_REQUESTS) { RequestsScreen(navController) }
+        // Admin screens
+        composable(ROUTE_ADMIN_PANEL) {AdminTabbedScreen(navController = navController) }
+        composable(ROUTE_USER_INPUT) { UserListScreen (navController = navController) }
+        composable(ROUTE_USER_MANAGEMENT) { UserListScreen (navController = navController) }
+        composable(ROUTE_CONTENT_MANAGEMENT) { ContentManagementScreen(navController = navController) }
+        composable(ROUTE_DATA_MANAGEMENT) { ContentManagementScreen(navController = navController) }
+        composable(ROUTE_VEHICLE_MANAGEMENT) { ContentManagementScreen(navController = navController) }
     }
+
 }
 
 

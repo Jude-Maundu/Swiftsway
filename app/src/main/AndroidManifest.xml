@@ -5,6 +5,9 @@
     <!-- Permissions for location -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+
 
     <application
         android:allowBackup="true"
@@ -20,7 +23,7 @@
         <!-- Google Maps API key -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCBIL9IlUgxfHCO8zGKDRJEqzqtzV22v2k" />
+            android:value="AIzaSyDjAURCLGVDCh47I1wjxX7xLKeLOuSs394" />
 
         <!-- Main Activity -->
         <activity

@@ -10,9 +10,9 @@ import kotlinx.coroutines.tasks.await
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.judemaundu.swiftsway2.ui.theme.Data.Booking
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
+import com.judemaundu.swiftsway2.ui.theme.Data.Booking.Booking
 import kotlinx.coroutines.launch
 
 // Main Composable Screen for Conductor to verify bookings

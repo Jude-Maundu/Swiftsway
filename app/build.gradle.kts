@@ -60,6 +60,8 @@ dependencies {
     implementation(libs.firebase.database)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.storage)
+    implementation(libs.firebase.analytics)
+    implementation(libs.androidx.animation.core.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -110,7 +112,8 @@ dependencies {
     implementation(libs.androidx.material3.v120)
     implementation (libs.androidx.ui.text )
     implementation (libs.androidx.material3.v112 )// or newer
-
+    implementation (libs.androidx.biometric)
+    implementation (libs.booking)
 
 
 

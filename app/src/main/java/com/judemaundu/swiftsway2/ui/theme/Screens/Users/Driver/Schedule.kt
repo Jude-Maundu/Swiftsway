@@ -3,6 +3,7 @@ package com.judemaundu.swiftsway2.ui.theme.Screens.Users.Driver
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -19,9 +20,9 @@ fun ScheduleScreen(navController: NavController) {
     val dbRef = FirebaseDatabase.getInstance().getReference("driverSchedules")
     val scheduleList = remember { mutableStateListOf<String>() }
     var isLoading by remember { mutableStateOf(true) }
-    val context = LocalContext.current // ✅ Get context here
+    val context = LocalContext.current
 
-    // Fetch data
+    // Fetch schedule list in real-time
     LaunchedEffect(Unit) {
         dbRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -34,12 +35,17 @@ fun ScheduleScreen(navController: NavController) {
 
             override fun onCancelled(error: DatabaseError) {
                 isLoading = false
+                Toast.makeText(context, "Failed to load schedules.", Toast.LENGTH_SHORT).show()
             }
         })
     }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text("Schedule") }) }
+        topBar = {
+            TopAppBar(
+                title = { Text("Schedule") }
+            )
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -47,7 +53,10 @@ fun ScheduleScreen(navController: NavController) {
                 .padding(16.dp)
                 .fillMaxSize()
         ) {
-            Text(text = "View and manage your driving schedule.")
+            Text(
+                text = "View and manage your driving schedule.",
+                style = MaterialTheme.typography.bodyLarge
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -55,9 +64,9 @@ fun ScheduleScreen(navController: NavController) {
                 CircularProgressIndicator()
             } else {
                 LazyColumn {
-//                    items(scheduleList) { schedule ->
-//                        Text("• $schedule", modifier = Modifier.padding(8.dp))
-//                    }
+                    items(scheduleList) { schedule ->
+                        Text("• $schedule", modifier = Modifier.padding(8.dp))
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -72,10 +81,12 @@ fun ScheduleScreen(navController: NavController) {
     }
 }
 
-// ✅ Now context is passed from composable
+// Function to add a new dummy schedule (you can replace it with user input)
 fun addNewSchedule(dbRef: DatabaseReference, context: android.content.Context) {
     val newScheduleRef = dbRef.push()
-    val schedule = mapOf("scheduleDetails" to "Wednesday: 9:00 AM - 1:00 PM - Route 3")
+    val schedule = mapOf(
+        "scheduleDetails" to "Wednesday: 9:00 AM - 1:00 PM - Route 3"
+    )
 
     newScheduleRef.setValue(schedule).addOnCompleteListener { task ->
         if (task.isSuccessful) {
@@ -85,7 +96,6 @@ fun addNewSchedule(dbRef: DatabaseReference, context: android.content.Context) {
         }
     }
 }
-
 
 @Preview
 @Composable

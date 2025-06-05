@@ -1,7 +1,8 @@
-package com.judemaundu.swiftsway2.ui.theme.Screens.Users.Driver
+package com.judemaundu.swiftsway2.ui.theme.screens.users.driver
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -10,6 +11,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.database.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -17,8 +21,10 @@ fun RouteManagementScreen(navController: NavController) {
     val dbRef = FirebaseDatabase.getInstance().getReference("routes")
     val routeList = remember { mutableStateListOf<String>() }
     var isLoading by remember { mutableStateOf(true) }
+    var newRouteName by remember { mutableStateOf("") }
+    val snackbarHostState = remember { SnackbarHostState() }
 
-    // Fetch the routes in real-time
+    // Firebase listener for route data
     LaunchedEffect(Unit) {
         dbRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -36,11 +42,8 @@ fun RouteManagementScreen(navController: NavController) {
     }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Route Management") }
-            )
-        }
+        topBar = { TopAppBar(title = { Text("Route Management") }) },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -55,43 +58,63 @@ fun RouteManagementScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Button to create a new route
-            Button(onClick = {
-                // Example route creation logic
-                createNewRoute(dbRef)
-            }) {
+            // Text field to enter a new route name
+            OutlinedTextField(
+                value = newRouteName,
+                onValueChange = { newRouteName = it },
+                label = { Text("Enter New Route Name") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Button to create a route
+            Button(
+                onClick = {
+                    if (newRouteName.isNotBlank()) {
+                        createNewRoute(dbRef, newRouteName.trim(), snackbarHostState)
+                        newRouteName = ""
+                    } else {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            snackbarHostState.showSnackbar("Route name cannot be empty.")
+                        }
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Text("Create New Route")
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Show a loading indicator while fetching data
             if (isLoading) {
                 CircularProgressIndicator()
             } else {
-                // Display list of routes
                 LazyColumn {
-//                    items(routeList) { route ->
-//                        Text("• $route", modifier = Modifier.padding(8.dp))
-//                    }
+                    items(routeList) { route ->
+                        Text("• $route", modifier = Modifier.padding(8.dp))
+                    }
                 }
             }
         }
     }
 }
 
-fun createNewRoute(dbRef: DatabaseReference) {
-    val newRouteRef = dbRef.push() // Push creates a new unique key
-    val route = mapOf(
-        "routeName" to "New Route from A to B" // Sample route name, you can change this to dynamic input
-    )
+fun createNewRoute(
+    dbRef: DatabaseReference,
+    routeName: String,
+    snackbarHostState: SnackbarHostState
+) {
+    val newRouteRef = dbRef.push()
+    val route = mapOf("routeName" to routeName)
 
-    // Add the new route to Firebase
     newRouteRef.setValue(route).addOnCompleteListener { task ->
-        if (task.isSuccessful) {
-            // Success, handle accordingly (e.g., show a message or refresh the UI)
-        } else {
-            // Error handling
+        CoroutineScope(Dispatchers.Main).launch {
+            if (task.isSuccessful) {
+                snackbarHostState.showSnackbar("Route \"$routeName\" created successfully!")
+            } else {
+                snackbarHostState.showSnackbar("Failed to create route.")
+            }
         }
     }
 }
