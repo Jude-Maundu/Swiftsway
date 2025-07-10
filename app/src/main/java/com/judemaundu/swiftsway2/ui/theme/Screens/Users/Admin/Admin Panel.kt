@@ -29,12 +29,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.judemaundu.swiftsway2.ui.theme.Data.Admin.AdminViewModel
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FirebaseFirestore
-import com.judemaundu.swiftsway2.ui.theme.Data.AllUsers.AllUsers
-import com.judemaundu.swiftsway2.ui.theme.Data.UserId.User
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-
+import kotlin.collections.filter
 
 
 class AdminPanelActivity : ComponentActivity() {
@@ -153,10 +151,6 @@ fun DashboardSection(viewModel: AdminViewModel) {
     }
 }
 
-
-
-
-
 class AdminViewModel : ViewModel() {
     private val _users = MutableStateFlow<List<AllUsers>>(emptyList())
     val users: StateFlow<List<AllUsers>> = _users.asStateFlow()
@@ -172,6 +166,8 @@ class AdminViewModel : ViewModel() {
             }
     }
 }
+
+annotation class AllUsers
 
 // ===================== COMPOSABLE SCREEN =====================
 @Composable
@@ -208,7 +204,7 @@ fun ViewAllUsersScreen(viewModel: AdminViewModel = viewModel()) {
             }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))1
+        Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
             value = searchQuery,
@@ -220,7 +216,7 @@ fun ViewAllUsersScreen(viewModel: AdminViewModel = viewModel()) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(onClick = {
-            exportToCSV(context, User, selectedRole, searchQuery.text)
+            exportToCSV(context, users, selectedRole, searchQuery.text)
         }) {
             Icon(Icons.Default.Download, contentDescription = "Export")
             Spacer(modifier = Modifier.width(8.dp))
@@ -251,7 +247,7 @@ fun ViewAllUsersScreen(viewModel: AdminViewModel = viewModel()) {
 
 fun exportToCSV(
     context: Context,
-    users: Unit,
+    users: List<com.google.firebase.firestore.auth.Users>,
     selectedRole: String,
     searchQuery: String
 ) {
@@ -260,13 +256,13 @@ fun exportToCSV(
         val file = File(exportDir, "users.csv")
         val writer = FileWriter(file)
         writer.append("Name,Email,Role\n")
-        val filteredUsers = users.filter {
+        val filteredusers = users.filter {
             (selectedRole == "All" || it.role.equals(selectedRole, ignoreCase = true)) &&
                     (it.fullName.contains(searchQuery, ignoreCase = true) ||
                             it.email.contains(searchQuery, ignoreCase = true))
         }
-        for (user in filteredUsers) {
-            writer.append("${user.fullName},${user.email},${user.role}\n")
+        for (users in filteredusers) {
+            writer.append("${users.fullName},${users.email},${users.role}\n")
         }
         writer.flush()
         writer.close()
@@ -342,6 +338,16 @@ fun SettingsScreen(viewModel: AdminViewModel) {
 }
 
 @Preview
+            Column(modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)) {
+                when (selectedMenuItem) {
+                    "Dashboard" -> DashboardSection(viewModel)
+                    "Users" -> ViewAllUsersScreen(viewModel)
+                    "Vehicles" -> VehicleManagementScreen(viewModel)
+                    "Payments" -> PaymentMonitoringScreen(viewModel)
+                    "Feedback" -> FeedbackSection(viewModel)
+                    "Settings" -> SettingsScreen(viewModel)
 @Composable
 private fun AdminPanelPreview() {
     AdminTabbedScreen(navController = rememberNavController())

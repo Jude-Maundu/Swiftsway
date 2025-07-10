@@ -51,7 +51,7 @@ class AdminViewModel : ViewModel() {
                 val usersList = mutableListOf<User>()
                 snapshot?.documents?.forEach { doc ->
                     val user = doc.toObject(User::class.java)
-                  //  user?.let { usersList.add(it.copy(id = doc.id)) }
+//                    users.let { usersList.add(it.copy(id = doc.id)) }
                 }
                 _users.value = usersList
             }

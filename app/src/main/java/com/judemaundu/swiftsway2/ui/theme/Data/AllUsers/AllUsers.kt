@@ -1,15 +1,11 @@
 package com.judemaundu.swiftsway2.ui.theme.Data.AllUsers
-data class AllUsers(
+data class users(
     val userId: String = "",
     val fullName: String = "",
     val email: String = "",
     val phoneNumber: String = "",
     val profileImageUrl: String = "",
     val role: String = "",
-
-
-
-// Optional fields per role
     val location: String = "",
     val joinedDate: String = "",
 
